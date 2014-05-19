@@ -5,7 +5,7 @@ public interface Commons {
     public static final int BOARD_WIDTH = 700;
     public static final int BOARD_HEIGTH = 716;
     public static final int GROUND = 10;
-    public static final int BOMB_HEIGHT = 10;
+    public static final int BOMB_WIDTH = 10; //BOMB_HEIGHT = 10;
     public static final int ALIEN_HEIGHT = 24;
     public static final int ALIEN_WIDTH = 24;
     public static final int BORDER_DOWN = 60;

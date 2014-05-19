@@ -205,16 +205,18 @@ public class Board extends JPanel implements Runnable, Commons {
                         }
                 }
             }
-
+            
+            //here we manage the player shots behaviour
+            //TODO to make the player shoot more than one shot per screen
             int x = shot.getX(); //changed from int y = shot.getY();
-            x -= 4; //changed from y-= 4;
-            if (x < 0) //changed from y
+            x += 4; //changed from y-= 4;
+            if (x > BOARD_WIDTH) //changed from y < 0
                 shot.die();
             else shot.setX(x); //changed from shot.setY(y);
         }
 
         // aliens
-        // guess this makes the aliens bounce left to right
+        // this makes the aliens bounce up and down
          Iterator it1 = aliens.iterator();
 
          while (it1.hasNext()) {
@@ -281,10 +283,10 @@ public class Board extends JPanel implements Runnable, Commons {
             int playerY = player.getY();
 
             if (player.isVisible() && !b.isDestroyed()) {
-                if ( bombX >= (playerX) && 
-                    bombX <= (playerX+PLAYER_WIDTH) &&
-                    bombY >= (playerY) && 
-                    bombY <= (playerY+PLAYER_HEIGHT) ) {
+                if ( bombY >= (playerY) && //changed from  bombX >= (playerX)
+                    bombY <= (playerY+PLAYER_HEIGHT) && //changed from bombX <= (playerX+PLAYER_WIDTH)
+                    bombX >= (playerX) && //changed from bombY >= (playerY)
+                    bombX <= (playerX+PLAYER_WIDTH) ) { //changed from bombY <= (playerY+PLAYER_HEIGHT)
                         ImageIcon ii = 
                             new ImageIcon(this.getClass().getResource(expl));
                         player.setImage(ii.getImage());
@@ -292,10 +294,11 @@ public class Board extends JPanel implements Runnable, Commons {
                         b.setDestroyed(true);;
                     }
             }
-
+        	
+            //this moves the aliens bombs left
             if (!b.isDestroyed()) {
-                b.setY(b.getY() + 1);   
-                if (b.getY() >= GROUND - BOMB_HEIGHT) {
+                b.setX(b.getX() - 1);  //changed from b.setY(b.getY() + 1);
+                if (b.getX() <= GROUND + BOMB_WIDTH) { //changed from b.getY() >= GROUND - BOMB_HEIGHT
                     b.setDestroyed(true);
                 }
             }
