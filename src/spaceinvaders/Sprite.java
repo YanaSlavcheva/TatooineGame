@@ -9,7 +9,7 @@ public class Sprite {
         protected int x;
         protected int y;
         protected boolean dying;
-        protected int dx;
+        protected int dy; //changed from dx
 
         public Sprite() {
             visible = true;

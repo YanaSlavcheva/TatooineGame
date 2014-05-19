@@ -17,9 +17,10 @@ public class Alien extends Sprite {
         setImage(ii.getImage());
 
     }
-
+    //this codes makes aliens bounce up-down
     public void act(int direction) {
-        this.x += direction;
+        this.y += direction; //changed from x += direction
+        					
     }
 
     public Bomb getBomb() {
