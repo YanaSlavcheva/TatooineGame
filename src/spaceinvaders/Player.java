@@ -7,17 +7,17 @@ import javax.swing.ImageIcon;
 
 public class Player extends Sprite implements Commons{
 
-    private final int START_Y = 280; 
-    private final int START_X = 270;
+    private final int START_Y = 310; //changed from 280
+    private final int START_X = 10; //changed from 270
 
     private final String player = "../spacepix/player.png";
-    private int width;
+    private int heigth; //changed from width
 
     public Player() {
 
         ImageIcon ii = new ImageIcon(this.getClass().getResource(player));
 
-        width = ii.getImage().getWidth(null); 
+        heigth = ii.getImage().getHeight(null); // changed from width = ii.getImage().getWidth(null);
 
         setImage(ii.getImage());
         setX(START_X);
@@ -25,24 +25,24 @@ public class Player extends Sprite implements Commons{
     }
 
     public void act() {
-        x += dx;
-        if (x <= 2) 
-            x = 2;
-        if (x >= BOARD_WIDTH - 2*width) 
-            x = BOARD_WIDTH - 2*width;
+        y += dy; //changed from x += dx;
+        if (y <= 2) // changed from x
+            y = 2; // changed from x
+        if (y >= BOARD_HEIGTH - 2*heigth) //changed from (x >= BOARD_WIDTH - 2*width)
+            y = BOARD_HEIGTH - 2*heigth; // x = BOARD_WIDTH - 2*width;
     }
 
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
 
-        if (key == KeyEvent.VK_LEFT)
+        if (key == KeyEvent.VK_UP) //changed from VK_LEFT
         {
-            dx = -2;
+            dy = -2; //changed from dx
         }
 
-        if (key == KeyEvent.VK_RIGHT)
+        if (key == KeyEvent.VK_DOWN) //changed from VK_RIGHT
         {
-            dx = 2;
+            dy = 2; //changed from dx
         }
 
     }
@@ -50,14 +50,14 @@ public class Player extends Sprite implements Commons{
     public void keyReleased(KeyEvent e) {
         int key = e.getKeyCode();
 
-        if (key == KeyEvent.VK_LEFT)
+        if (key == KeyEvent.VK_UP) //changed from VK_LEFT
         {
-            dx = 0;
+            dy = 0; //changed from dx
         }
 
-        if (key == KeyEvent.VK_RIGHT)
+        if (key == KeyEvent.VK_DOWN) //changed from VK_RIGHT
         {
-            dx = 0;
+            dy = 0; //changed from dx
         }
     }
 }
