@@ -8,7 +8,6 @@ import java.awt.Graphics;
 import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
@@ -23,12 +22,15 @@ public class Board extends JPanel implements Runnable, Commons {
     private ArrayList aliens; // TODO change aliens spacing in array
     private Player player;
     private Shot shot;
-
+    
+    
     private int alienX = 650; //original 150 // TODO: to set the position right after correcting the movement
     private int alienY = 5; // original 5
     private int direction = -1; //original -1
-    private int deaths = 0;
+    public  int deaths = 0;
 
+    private int lives = 30; // This must be 30 if we want to have 3 lives. Coz shot is 10px long; Nick
+    
     private boolean ingame = true;
     private final String expl = "../spacepix/explosion.png";
     private final String alienpix = "../spacepix/alien.png";
@@ -102,6 +104,7 @@ public class Board extends JPanel implements Runnable, Commons {
         if (player.isDying()) {
             player.die();
             ingame = false;
+        
         }
     }
 
@@ -124,20 +127,29 @@ public class Board extends JPanel implements Runnable, Commons {
             }
         }
     }
+    
+    // This method show score and lives; Nick 
+    public void drawScore(Graphics g){
+    	
+    	int score = deaths;
+    	
+    	Font small = new Font("Helvetica", Font.BOLD, 14);
+        
+        g.setColor(Color.red);
+        g.setFont(small);
+        g.drawString("Score: "+Integer.toString(score), 50, 50);
+        g.drawString("Lives: "+Integer.toString(lives/10), 60, 60);
 
+    }
+    
     public void paint(Graphics g)
     {
       super.paint(g);
-
-      g.setColor(Color.black);
-      g.fillRect(0, 0, d.width, d.height);
-      g.setColor(Color.blue);
-      
       
       //TODO we don't need the ground - remove it later?!?
       g.setColor(Color.white); //changed from black
       g.fillRect(0, 0, d.width, d.height); //changed (0, 0, d.width, d.height)
-      g.setColor(Color.green);
+      g.setColor(Color.green);   
 
       if (ingame) {
 
@@ -146,6 +158,7 @@ public class Board extends JPanel implements Runnable, Commons {
         drawPlayer(g);
         drawShot(g);
         drawBombing(g);
+        drawScore(g);
       }
 
       Toolkit.getDefaultToolkit().sync();
@@ -292,16 +305,22 @@ public class Board extends JPanel implements Runnable, Commons {
                     bombY <= (playerY+PLAYER_HEIGHT) && //changed from bombX <= (playerX+PLAYER_WIDTH)
                     bombX >= (playerX) && //changed from bombY >= (playerY)
                     bombX <= (playerX+PLAYER_WIDTH) ) { //changed from bombY <= (playerY+PLAYER_HEIGHT)
-                        ImageIcon ii = 
+                	
+                	if (lives==1) { // Here we implement lives idea; Nick
+						
+					ImageIcon ii = 
                             new ImageIcon(this.getClass().getResource(expl));
                         player.setImage(ii.getImage());
                         player.setDying(true);
                         b.setDestroyed(true);;
-                    }
+                    }else {
+						lives--;
+					}
+                }
             }
         	
             //this moves the aliens bombs left
-            if (!b.isDestroyed()) {
+            if (!b.isDestroyed()) { // speed of bombs is here; Nick
                 b.setX(b.getX() - 1);  //changed from b.setY(b.getY() + 1);
                 if (b.getX() <= GROUND + BOMB_WIDTH) { //changed from b.getY() >= GROUND - BOMB_HEIGHT
                     b.setDestroyed(true);
@@ -351,8 +370,9 @@ public class Board extends JPanel implements Runnable, Commons {
           if (ingame)
           {
             if (e.isControlDown()) { //changed from (e.isAltDown()) - we will shoot with ctrl
-                if (!shot.isVisible())
+                if (!shot.isVisible()) 
                     shot = new Shot(x, y);
+                    
             }
           }
         }
