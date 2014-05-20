@@ -128,18 +128,16 @@ public class Board extends JPanel implements Runnable, Commons {
     public void paint(Graphics g)
     {
       super.paint(g);
-<<<<<<< HEAD
 
       g.setColor(Color.black);
       g.fillRect(0, 0, d.width, d.height);
-      g.setColor(Color.blue);   
-=======
+      g.setColor(Color.blue);
+      
       
       //TODO we don't need the ground - remove it later?!?
       g.setColor(Color.white); //changed from black
       g.fillRect(0, 0, d.width, d.height); //changed (0, 0, d.width, d.height)
-      g.setColor(Color.green);   
->>>>>>> mainRepo/master
+      g.setColor(Color.green);
 
       if (ingame) {
 
