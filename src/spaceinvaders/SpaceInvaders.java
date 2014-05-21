@@ -7,7 +7,7 @@ public class SpaceInvaders extends JFrame implements Commons {
     public SpaceInvaders()
     {
         add(new Board());
-        setTitle("TATOOINE - the coolest game!");
+        setTitle("The Empire Strikes Back");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(BOARD_WIDTH, BOARD_HEIGTH);
         setLocationRelativeTo(null);
