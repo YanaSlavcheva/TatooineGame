@@ -26,8 +26,8 @@ public class Player extends Sprite implements Commons{
 
     public void act() {
         y += dy; //changed from x += dx;
-        if (y <= 2) // changed from x
-            y = 2; // changed from x
+        if (y <= BORDER_UP + DIVIDING_LINE) // changed from x
+            y = BORDER_UP + DIVIDING_LINE; // changed from x
         if (y >= BOARD_HEIGTH - 2*heigth) //changed from (x >= BOARD_WIDTH - 2*width)
             y = BOARD_HEIGTH - 2*heigth; // x = BOARD_WIDTH - 2*width;
     }
