@@ -39,6 +39,7 @@ public class Board extends JPanel implements Runnable, Commons {
 	private final String fighterpix = "../tatooinepix/fighter.png";
 	private String message = "Game Over";
 	private String messageExtended = "Nice try. I knew you were going to fail anyway...";
+	private String messageScores = "SCORE: ";
 
 	private Thread animator;
 
@@ -197,9 +198,9 @@ public class Board extends JPanel implements Runnable, Commons {
 		//GAME OVER
 		// this sets the rectangle
 		g.setColor(new Color(0, 32, 48));
-		g.fillRect(50, BOARD_WIDTH / 2 - 90, BOARD_WIDTH - 100, 100);
+		g.fillRect(50, BOARD_WIDTH / 2 - 90, BOARD_WIDTH - 100, 105);
 		g.setColor(Color.white);
-		g.drawRect(50, BOARD_WIDTH / 2 - 90, BOARD_WIDTH - 100, 100);
+		g.drawRect(50, BOARD_WIDTH / 2 - 90, BOARD_WIDTH - 100, 105);
 
 		// this writes the main message
 		Font big = new Font("Helvetica", Font.BOLD, 30);
@@ -214,13 +215,12 @@ public class Board extends JPanel implements Runnable, Commons {
 		FontMetrics finalTextsSmall = this.getFontMetrics(small);
 		g.setColor(Color.white);
 		g.setFont(small);
-		g.drawString(messageExtended, (BOARD_WIDTH - finalTextsSmall.stringWidth(messageExtended)) / 2, BOARD_WIDTH / 2 - 15);
+		g.drawString(messageExtended, (BOARD_WIDTH - finalTextsSmall.stringWidth(messageExtended)) / 2, BOARD_WIDTH / 2 - 25);
 		
-		//this draws scores and HP
+		//this draws scores
 		g.setColor(Color.white);
 		g.setFont(small);
-		g.drawString("SCORE: " + Integer.toString(score), 40, 35);
-		g.drawString("HP: " + Integer.toString(lives), 40, 60);
+		g.drawString(messageScores + Integer.toString(score), (BOARD_WIDTH - finalTextsSmall.stringWidth(messageScores)) / 2, BOARD_WIDTH / 2);
 	}
 
 	public void animationCycle() {
@@ -228,6 +228,7 @@ public class Board extends JPanel implements Runnable, Commons {
 		if (deaths == NUMBER_OF_FIGHTERS_TO_DESTROY) {
 			ingame = false;
 			message = "Game won!";
+			messageExtended = "Wasn't that hard, was it? Enjoy your life on your free planet. By yourself.";
 		}
 
 		// player
@@ -259,7 +260,7 @@ public class Board extends JPanel implements Runnable, Commons {
 				}
 			}
 			score = deaths * 100;
-			//the player shots behaviour
+			//the player shots behavior
 			int x = shot.getX();
 			x += 4;
 			if (x > BOARD_WIDTH)
@@ -309,6 +310,7 @@ public class Board extends JPanel implements Runnable, Commons {
 				if (x < GROUND + FIGHTER_WIDTH) {
 					ingame = false;
 					message = "Invasion!";
+					messageExtended = "Well. You're fucked.";
 				}
 
 				fighter.act(direction);
