@@ -135,10 +135,10 @@ public class Board extends JPanel implements Runnable, Commons {
     	
     	Font small = new Font("Helvetica", Font.BOLD, 14);
         
-        g.setColor(Color.red);
+        g.setColor(Color.black);
         g.setFont(small);
         g.drawString("Score: "+Integer.toString(score), 50, 50);
-        g.drawString("Lives: "+Integer.toString(lives/10), 60, 60);
+        g.drawString("HP: "+Integer.toString(lives/10), 50, 70);
 
     }
     
