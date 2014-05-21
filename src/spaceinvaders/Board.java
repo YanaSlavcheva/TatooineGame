@@ -323,7 +323,7 @@ public class Board extends JPanel implements Runnable, Commons {
                         player.setDying(true); // Player dies
                         b.setDestroyed(true);
                     } else {
-						lives--;
+						lives -= 3; // changed from lives--; Mitko
 					}
                 }
             }
