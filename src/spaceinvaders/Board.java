@@ -362,7 +362,7 @@ public class Board extends JPanel implements Runnable, Commons {
 
 			// this moves the aliens bombs left
 			if (!b.isDestroyed()) { // speed of bombs is here; Nick
-				b.setX(b.getX() - 5); // changed from b.setY(b.getY() + 1);
+				b.setX(b.getX() - 5); // changed from b.setY(b.getY() + 1); <- SPEED OF THE SHOT
 				if (b.getX() <= GROUND + BOMB_WIDTH) { // changed from b.getY()
 														// >= GROUND -
 														// BOMB_HEIGHT
