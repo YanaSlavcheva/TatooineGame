@@ -137,10 +137,12 @@ public class Board extends JPanel implements Runnable, Commons {
 
 		Font small = new Font("Helvetica", Font.BOLD, 16);
 
-		g.setColor(Color.black);
+		g.setColor(Color.gray); //changed from black
 		g.setFont(small);
-		g.drawString("Score: " + Integer.toString(score), 40, 40);
+		g.drawString("SCORE: " + Integer.toString(score), 40, 35);
 		g.drawString("HP: " + Integer.toString(lives), 40, 60);
+		
+		
 
 	}
 
@@ -149,6 +151,17 @@ public class Board extends JPanel implements Runnable, Commons {
 		BackgroundImage bground = new BackgroundImage();
 
 		g.drawImage(bground.getImage(), -8, -8, this);
+		
+		//the name of the game on the top; Yana
+		Font small = new Font("Helvetica", Font.BOLD, 16);
+		Font big = new Font("Helvetica", Font.BOLD, 30);
+		
+		g.setColor(Color.gray);
+		g.setFont(big);
+		g.drawString("T  A  T  O  O  I  N  E", 380, 40);
+		g.setColor(Color.gray);
+		g.setFont(small);
+		g.drawString("THE    EMPIRE    STRIKES    BACK", 382, 60);
 	}
 
 	public void paint(Graphics g) {
@@ -167,9 +180,9 @@ public class Board extends JPanel implements Runnable, Commons {
 			// GROUND, BOARD_WIDTH, GROUND)
 
 			// the line to keep the playing field from the captions
-			g.setColor(Color.black); // changed from black
-			g.fillRect(0, 80, BOARD_WIDTH, 10); // changed (0, 0, d.width, d.height)
-			g.setColor(Color.black);
+			g.setColor(Color.gray); // changed from black
+			g.fillRect(0, 80, BOARD_WIDTH, 5); // changed (0, 0, d.width, d.height)
+			g.setColor(Color.gray);
 
 			drawAliens(g);
 			drawPlayer(g);
