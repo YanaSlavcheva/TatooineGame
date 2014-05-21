@@ -22,11 +22,14 @@ public class Board extends JPanel implements Runnable, Commons {
 	private Player player;
 	private Shot shot;
 
-	private int fighterX = 650; // original 150 // TODO: to set the position right
+	private int fighterX = 650; // original 150 // TODO: to set the position
+								// right
 								// after correcting the movement
 	private int fighterY = 5 + DIVIDING_LINE; // original 5
 	private int direction = -1; // original -1
 	public int deaths = 0;
+	public int score;
+
 
 	private int lives = 100; // This must be 30 if we want to have 3 lives. Coz
 								// shot is 10px long; Nick
@@ -35,6 +38,7 @@ public class Board extends JPanel implements Runnable, Commons {
 	private final String expl = "../tatooinepix/explosion.png";
 	private final String fighterpix = "../tatooinepix/fighter.png";
 	private String message = "Game Over";
+	private String messageExtended = "Nice try. I knew you were going to fail anyway...";
 
 	private Thread animator;
 
@@ -43,7 +47,7 @@ public class Board extends JPanel implements Runnable, Commons {
 		addKeyListener(new TAdapter());
 		setFocusable(true);
 		d = new Dimension(BOARD_WIDTH, BOARD_HEIGTH);
-		setBackground(Color.white); // changed from black
+		setBackground(Color.white);
 
 		gameInit();
 		setDoubleBuffered(true);
@@ -60,13 +64,10 @@ public class Board extends JPanel implements Runnable, Commons {
 
 		ImageIcon ii = new ImageIcon(this.getClass().getResource(fighterpix));
 
-		for (int i = 0; i < 5; i++) { // changed from 4 - !!!linked with
-										// NUMBER_OF_FIGHTERS_TO_DESTROY in
-										// Commons.java
-			for (int j = 0; j < 3; j++) { // changed from 6
-				Fighter fighter = new Fighter(fighterX + 50 * j, fighterY + 50 * i);// changed
-																			// from
-																			// 18
+		for (int i = 0; i < 5; i++) { //!!!linked with NUMBER_OF_FIGHTERS_TO_DESTROY in Commons.java
+			for (int j = 0; j < 3; j++) {
+				Fighter fighter = new Fighter(fighterX + 50 * j, fighterY + 50
+						* i);
 				fighter.setImage(ii.getImage());
 				fighters.add(fighter);
 			}
@@ -88,7 +89,8 @@ public class Board extends JPanel implements Runnable, Commons {
 			Fighter fighter = (Fighter) it.next();
 
 			if (fighter.isVisible()) {
-				g.drawImage(fighter.getImage(), fighter.getX(), fighter.getY(), this);
+				g.drawImage(fighter.getImage(), fighter.getX(), fighter.getY(),
+						this);
 			}
 
 			if (fighter.isDying()) {
@@ -130,32 +132,30 @@ public class Board extends JPanel implements Runnable, Commons {
 		}
 	}
 
-	// This method show score and lives; Nick
+	// This method show score and lives
 	public void drawScore(Graphics g) {
 
-		int score = deaths * 100;
+//		int score = deaths * 100;
 
 		Font small = new Font("Helvetica", Font.BOLD, 16);
 
-		g.setColor(Color.gray); //changed from black
+		g.setColor(Color.gray);
 		g.setFont(small);
 		g.drawString("SCORE: " + Integer.toString(score), 40, 35);
 		g.drawString("HP: " + Integer.toString(lives), 40, 60);
-		
-		
 
 	}
 
-	// Method to draw the background; Mitko
+	// Method to draw the background
 	public void drawBackground(Graphics g) {
 		BackgroundImage bground = new BackgroundImage();
 
 		g.drawImage(bground.getImage(), -8, -8, this);
-		
-		//the name of the game on the top; Yana
+
+		// the name of the game on the top
 		Font small = new Font("Helvetica", Font.BOLD, 16);
 		Font big = new Font("Helvetica", Font.BOLD, 30);
-		
+
 		g.setColor(Color.gray);
 		g.setFont(big);
 		g.drawString("T  A  T  O  O  I  N  E", 380, 40);
@@ -167,21 +167,13 @@ public class Board extends JPanel implements Runnable, Commons {
 	public void paint(Graphics g) {
 		super.paint(g);
 
-		// TODO we don't need the ground - remove it later?!?
-		// g.setColor(Color.white); //changed from black
-		// g.fillRect(0, 0, d.width, d.height); //changed (0, 0, d.width,
-		// d.height)
-		// g.setColor(Color.green);
-
 		if (ingame) {
 
 			drawBackground(g);
-			// g.drawLine(0, GROUND, BOARD_WIDTH, GROUND); //changed from (0,
-			// GROUND, BOARD_WIDTH, GROUND)
 
 			// the line to keep the playing field from the captions
-			g.setColor(Color.gray); // changed from black
-			g.fillRect(0, DIVIDING_LINE, BOARD_WIDTH, 5); // changed (0, 0, d.width, d.height)
+			g.setColor(Color.gray);
+			g.fillRect(0, DIVIDING_LINE, BOARD_WIDTH, 5);
 			g.setColor(Color.gray);
 
 			drawFighters(g);
@@ -202,18 +194,33 @@ public class Board extends JPanel implements Runnable, Commons {
 		g.setColor(Color.black);
 		g.fillRect(0, 0, BOARD_WIDTH, BOARD_HEIGTH);
 
+		//GAME OVER
+		// this sets the rectangle
 		g.setColor(new Color(0, 32, 48));
-		g.fillRect(50, BOARD_WIDTH / 2 - 30, BOARD_WIDTH - 100, 50);
+		g.fillRect(50, BOARD_WIDTH / 2 - 90, BOARD_WIDTH - 100, 100);
 		g.setColor(Color.white);
-		g.drawRect(50, BOARD_WIDTH / 2 - 30, BOARD_WIDTH - 100, 50);
+		g.drawRect(50, BOARD_WIDTH / 2 - 90, BOARD_WIDTH - 100, 100);
 
+		// this writes the main message
+		Font big = new Font("Helvetica", Font.BOLD, 30);
+		FontMetrics finalTexts = this.getFontMetrics(big);
+		g.setColor(Color.white);
+		g.setFont(big);
+		g.drawString(message, (BOARD_WIDTH - finalTexts.stringWidth(message)) / 2,
+				BOARD_WIDTH / 2 - 50);
+		
+		// this writes the additional message
 		Font small = new Font("Helvetica", Font.BOLD, 14);
-		FontMetrics metr = this.getFontMetrics(small);
-
+		FontMetrics finalTextsSmall = this.getFontMetrics(small);
 		g.setColor(Color.white);
 		g.setFont(small);
-		g.drawString(message, (BOARD_WIDTH - metr.stringWidth(message)) / 2,
-				BOARD_WIDTH / 2);
+		g.drawString(messageExtended, (BOARD_WIDTH - finalTextsSmall.stringWidth(messageExtended)) / 2, BOARD_WIDTH / 2 - 15);
+		
+		//this draws scores and HP
+		g.setColor(Color.white);
+		g.setFont(small);
+		g.drawString("SCORE: " + Integer.toString(score), 40, 35);
+		g.drawString("HP: " + Integer.toString(lives), 40, 60);
 	}
 
 	public void animationCycle() {
@@ -238,7 +245,8 @@ public class Board extends JPanel implements Runnable, Commons {
 				int fighterY = fighter.getY();
 
 				if (fighter.isVisible() && shot.isVisible()) {
-					if (shotX >= (fighterX) && shotX <= (fighterX + FIGHTER_WIDTH)
+					if (shotX >= (fighterX)
+							&& shotX <= (fighterX + FIGHTER_WIDTH)
 							&& shotY >= (fighterY)
 							&& shotY <= (fighterY + FIGHTER_HEIGHT)) {
 						ImageIcon ii = new ImageIcon(getClass().getResource(
@@ -250,16 +258,16 @@ public class Board extends JPanel implements Runnable, Commons {
 					}
 				}
 			}
-
-			// here we manage the player shots behaviour
-			// TODO to make the player shoot more than one shot per screen
-			int x = shot.getX(); // changed from int y = shot.getY();
-			x += 4; // changed from y-= 4;
-			if (x > BOARD_WIDTH) // changed from y < 0
+			score = deaths * 100;
+			//the player shots behaviour
+			int x = shot.getX();
+			x += 4;
+			if (x > BOARD_WIDTH)
 				shot.die();
 			else
-				shot.setX(x); // changed from shot.setY(y);
+				shot.setX(x);
 		}
+
 
 		// fighters
 		// this makes the fighters bounce up and down
@@ -267,30 +275,24 @@ public class Board extends JPanel implements Runnable, Commons {
 
 		while (it1.hasNext()) {
 			Fighter a1 = (Fighter) it1.next();
-			int y = a1.getY(); // changed from x-es
+			int y = a1.getY();
 
-			if (y >= BOARD_HEIGTH - BORDER_DOWN && direction != -1) { // changed
-																		// from
-																		// x,
-																		// width
+			if (y >= BOARD_HEIGTH - BORDER_DOWN && direction != -1) {
 				direction = -1;
 				Iterator i1 = fighters.iterator();
 				while (i1.hasNext()) {
 					Fighter a2 = (Fighter) i1.next();
-					a2.setX(a2.getX() - GO_LEFT); // changed from
-													// a2.setY(a2.getY() +
-													// GO_DOWN);
+					a2.setX(a2.getX() - GO_LEFT);
 				}
 			}
 
-			if (y <= BORDER_UP + DIVIDING_LINE && direction != 1) { // changed from x
+			if (y <= BORDER_UP + DIVIDING_LINE && direction != 1) {
 				direction = 1;
 
 				Iterator i2 = fighters.iterator();
 				while (i2.hasNext()) {
 					Fighter a = (Fighter) i2.next();
-					a.setX(a.getX() - GO_LEFT); // changed from a.setY(a.getY()
-												// + GO_DOWN);
+					a.setX(a.getX() - GO_LEFT);
 				}
 			}
 		}
@@ -302,10 +304,9 @@ public class Board extends JPanel implements Runnable, Commons {
 			Fighter fighter = (Fighter) it.next();
 			if (fighter.isVisible()) {
 
-				int x = fighter.getX(); // changed from x-es
+				int x = fighter.getX();
 
-				if (x < GROUND + FIGHTER_WIDTH) { // changed from (y > GROUND -
-												// FIGHTER_HEIGHT)
+				if (x < GROUND + FIGHTER_WIDTH) {
 					ingame = false;
 					message = "Invasion!";
 				}
@@ -337,17 +338,13 @@ public class Board extends JPanel implements Runnable, Commons {
 
 			// HIT DETECTION
 			if (player.isVisible() && !b.isDestroyed()) {
-				if (bombY >= (playerY) && // changed from bombX >= (playerX)
-						bombY <= (playerY + PLAYER_HEIGHT) && // changed from
-																// bombX <=
-																// (playerX+PLAYER_WIDTH)
-						bombX >= (playerX) && // changed from bombY >= (playerY)
-						bombX <= (playerX + PLAYER_WIDTH + HIT_BUFFER)) { // changed from
-																	// bombY <=
-																	// (playerY+PLAYER_HEIGHT)
+				if (bombY >= (playerY) && 
+						bombY <= (playerY + PLAYER_HEIGHT) && 
+						bombX >= (playerX) &&
+						bombX <= (playerX + PLAYER_WIDTH + HIT_BUFFER)) {
 
-					// Here we implement lives idea; Nick
-					if (lives == 1) {
+					// count of lives
+					if (lives < 1) {
 
 						ImageIcon ii = new ImageIcon(this.getClass()
 								.getResource(expl));
@@ -361,11 +358,9 @@ public class Board extends JPanel implements Runnable, Commons {
 			}
 
 			// this moves the fighters bombs left
-			if (!b.isDestroyed()) { // speed of bombs is here; Nick
-				b.setX(b.getX() - 5); // changed from b.setY(b.getY() + 1); <- SPEED OF THE SHOT
-				if (b.getX() <= GROUND + BOMB_WIDTH) { // changed from b.getY()
-														// >= GROUND -
-														// BOMB_HEIGHT
+			if (!b.isDestroyed()) { // speed of bombs is here
+				b.setX(b.getX() - 5);
+				if (b.getX() <= GROUND + BOMB_WIDTH) {
 					b.setDestroyed(true);
 				}
 			}
@@ -411,8 +406,7 @@ public class Board extends JPanel implements Runnable, Commons {
 			int y = player.getY();
 
 			if (ingame) {
-				if (e.isControlDown()) { // changed from (e.isAltDown()) - we
-											// will shoot with ctrl
+				if (e.isControlDown()) {
 					if (!shot.isVisible())
 						shot = new Shot(x, y);
 
