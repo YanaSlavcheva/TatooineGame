@@ -15,5 +15,5 @@ public interface Commons {
     public static final int CHANCE = 5;
     public static final int DELAY = 17;
     public static final int PLAYER_WIDTH = 20;
-    public static final int PLAYER_HEIGHT = 30;
+    public static final int PLAYER_HEIGHT = 48;
 }
