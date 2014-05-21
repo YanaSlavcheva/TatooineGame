@@ -24,7 +24,7 @@ public class Board extends JPanel implements Runnable, Commons {
 
 	private int alienX = 650; // original 150 // TODO: to set the position right
 								// after correcting the movement
-	private int alienY = 5; // original 5
+	private int alienY = 5 + DIVIDING_LINE; // original 5
 	private int direction = -1; // original -1
 	public int deaths = 0;
 
@@ -181,7 +181,7 @@ public class Board extends JPanel implements Runnable, Commons {
 
 			// the line to keep the playing field from the captions
 			g.setColor(Color.gray); // changed from black
-			g.fillRect(0, 80, BOARD_WIDTH, 5); // changed (0, 0, d.width, d.height)
+			g.fillRect(0, DIVIDING_LINE, BOARD_WIDTH, 5); // changed (0, 0, d.width, d.height)
 			g.setColor(Color.gray);
 
 			drawAliens(g);
@@ -283,7 +283,7 @@ public class Board extends JPanel implements Runnable, Commons {
 				}
 			}
 
-			if (y <= BORDER_UP && direction != 1) { // changed from x
+			if (y <= BORDER_UP + DIVIDING_LINE && direction != 1) { // changed from x
 				direction = 1;
 
 				Iterator i2 = aliens.iterator();
