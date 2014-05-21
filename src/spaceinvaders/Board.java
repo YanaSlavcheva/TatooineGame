@@ -29,7 +29,7 @@ public class Board extends JPanel implements Runnable, Commons {
     private int direction = -1; //original -1
     public  int deaths = 0;
 
-    private int lives = 1000; // This must be 30 if we want to have 3 lives. Coz shot is 10px long; Nick
+    private int lives = 100; // This must be 30 if we want to have 3 lives. Coz shot is 10px long; Nick
     
     private boolean ingame = true;
     private final String expl = "../spacepix/explosion.png";
@@ -138,7 +138,7 @@ public class Board extends JPanel implements Runnable, Commons {
         g.setColor(Color.black);
         g.setFont(small);
         g.drawString("Score: "+Integer.toString(score), 40, 40);
-        g.drawString("HP: "+Integer.toString(lives/10), 40, 60);
+        g.drawString("HP: "+Integer.toString(lives), 40, 60);
 
     }
     
