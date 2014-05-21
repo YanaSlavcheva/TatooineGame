@@ -15,375 +15,396 @@ import java.util.Random;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
+public class Board extends JPanel implements Runnable, Commons {
 
-public class Board extends JPanel implements Runnable, Commons { 
+	private Dimension d;
+	private ArrayList aliens; // TODO change aliens spacing in array
+	private Player player;
+	private Shot shot;
 
-    private Dimension d;
-    private ArrayList aliens; // TODO change aliens spacing in array
-    private Player player;
-    private Shot shot;
-    
-    
-    private int alienX = 650; //original 150 // TODO: to set the position right after correcting the movement
-    private int alienY = 5; // original 5
-    private int direction = -1; //original -1
-    public  int deaths = 0;
+	private int alienX = 650; // original 150 // TODO: to set the position right
+								// after correcting the movement
+	private int alienY = 5; // original 5
+	private int direction = -1; // original -1
+	public int deaths = 0;
 
-    private int lives = 100; // This must be 30 if we want to have 3 lives. Coz shot is 10px long; Nick
-    
-    private boolean ingame = true;
-    private final String expl = "../spacepix/explosion.png";
-    private final String alienpix = "../spacepix/alien.png";
-    private String message = "Game Over";
+	private int lives = 100; // This must be 30 if we want to have 3 lives. Coz
+								// shot is 10px long; Nick
 
-    private Thread animator;
+	private boolean ingame = true;
+	private final String expl = "../spacepix/explosion.png";
+	private final String alienpix = "../spacepix/alien.png";
+	private String message = "Game Over";
 
-    public Board() 
-    {
+	private Thread animator;
 
-        addKeyListener(new TAdapter());
-        setFocusable(true);
-        d = new Dimension(BOARD_WIDTH, BOARD_HEIGTH);
-        setBackground(Color.white); //changed from black
+	public Board() {
 
-        gameInit();
-        setDoubleBuffered(true);
-    }
+		addKeyListener(new TAdapter());
+		setFocusable(true);
+		d = new Dimension(BOARD_WIDTH, BOARD_HEIGTH);
+		setBackground(Color.white); // changed from black
 
-    public void addNotify() {
-        super.addNotify();
-        gameInit();
-    }
+		gameInit();
+		setDoubleBuffered(true);
+	}
 
-    public void gameInit() {
+	public void addNotify() {
+		super.addNotify();
+		gameInit();
+	}
 
-        aliens = new ArrayList();
+	public void gameInit() {
 
-        ImageIcon ii = new ImageIcon(this.getClass().getResource(alienpix));
+		aliens = new ArrayList();
 
-        for (int i=0; i < 5; i++) { //changed from 4 - !!!linked with NUMBER_OF_ALIENS_TO_DESTROY in Commons.java
-            for (int j=0; j < 3; j++) { //changed from 6
-                Alien alien = new Alien(alienX + 50*j, alienY + 50*i);// changed from 18
-                alien.setImage(ii.getImage());
-                aliens.add(alien);
-            }
-        }
+		ImageIcon ii = new ImageIcon(this.getClass().getResource(alienpix));
 
-        player = new Player();
-        shot = new Shot();
+		for (int i = 0; i < 5; i++) { // changed from 4 - !!!linked with
+										// NUMBER_OF_ALIENS_TO_DESTROY in
+										// Commons.java
+			for (int j = 0; j < 3; j++) { // changed from 6
+				Alien alien = new Alien(alienX + 50 * j, alienY + 50 * i);// changed
+																			// from
+																			// 18
+				alien.setImage(ii.getImage());
+				aliens.add(alien);
+			}
+		}
 
-        if (animator == null || !ingame) {
-            animator = new Thread(this);
-            animator.start();
-        }
-    }
+		player = new Player();
+		shot = new Shot();
 
-    public void drawAliens(Graphics g) 
-    {
-        Iterator it = aliens.iterator();
+		if (animator == null || !ingame) {
+			animator = new Thread(this);
+			animator.start();
+		}
+	}
 
-        while (it.hasNext()) {
-            Alien alien = (Alien) it.next();
+	public void drawAliens(Graphics g) {
+		Iterator it = aliens.iterator();
 
-            if (alien.isVisible()) {
-                g.drawImage(alien.getImage(), alien.getX(), alien.getY(), this);
-            }
+		while (it.hasNext()) {
+			Alien alien = (Alien) it.next();
 
-            if (alien.isDying()) {
-                alien.die();
-            }
-        }
-    }
+			if (alien.isVisible()) {
+				g.drawImage(alien.getImage(), alien.getX(), alien.getY(), this);
+			}
 
-    public void drawPlayer(Graphics g) {
+			if (alien.isDying()) {
+				alien.die();
+			}
+		}
+	}
 
-        if (player.isVisible()) {
-            g.drawImage(player.getImage(), player.getX(), player.getY(), this);
-        }
+	public void drawPlayer(Graphics g) {
 
-        if (player.isDying()) {
-            player.die();
-            ingame = false;
-        
-        }
-    }
+		if (player.isVisible()) {
+			g.drawImage(player.getImage(), player.getX(), player.getY(), this);
+		}
 
-    public void drawShot(Graphics g) {
-        if (shot.isVisible())
-            g.drawImage(shot.getImage(), shot.getX(), shot.getY(), this);
-    }
+		if (player.isDying()) {
+			player.die();
+			ingame = false;
 
-    public void drawBombing(Graphics g) {
+		}
+	}
 
-        Iterator i3 = aliens.iterator();
+	public void drawShot(Graphics g) {
+		if (shot.isVisible())
+			g.drawImage(shot.getImage(), shot.getX(), shot.getY(), this);
+	}
 
-        while (i3.hasNext()) {
-            Alien a = (Alien) i3.next();
+	public void drawBombing(Graphics g) {
 
-            Alien.Bomb b = a.getBomb();
+		Iterator i3 = aliens.iterator();
 
-            if (!b.isDestroyed()) {
-                g.drawImage(b.getImage(), b.getX(), b.getY(), this); 
-            }
-        }
-    }
-    
-    // This method show score and lives; Nick 
-    public void drawScore(Graphics g){
-    	
-    	int score = deaths * 100;
-    	
-    	Font small = new Font("Helvetica", Font.BOLD, 16);
-        
-        g.setColor(Color.black);
-        g.setFont(small);
-        g.drawString("Score: "+Integer.toString(score), 40, 40);
-        g.drawString("HP: "+Integer.toString(lives), 40, 60);
+		while (i3.hasNext()) {
+			Alien a = (Alien) i3.next();
 
-    }
-    
-    // Method to draw the background; Mitko
-    public void drawBackground(Graphics g){
-    	BackgroundImage bground = new BackgroundImage();
-    	
-    	g.drawImage(bground.getImage(), -8, -8, this);
-    }
-    
-    public void paint(Graphics g)
-    {
-      super.paint(g);
-      
-      //TODO we don't need the ground - remove it later?!?
-//      g.setColor(Color.white); //changed from black
-//      g.fillRect(0, 0, d.width, d.height); //changed (0, 0, d.width, d.height)
-//      g.setColor(Color.green);   
+			Alien.Bomb b = a.getBomb();
 
-      if (ingame) {
-    	  
-    	drawBackground(g);
-//        g.drawLine(GROUND, 0, GROUND, BOARD_HEIGTH); //changed from (0, GROUND, BOARD_WIDTH, GROUND)
-        drawAliens(g);
-        drawPlayer(g);
-        drawShot(g);
-        drawBombing(g);
-        drawScore(g);
-      }
+			if (!b.isDestroyed()) {
+				g.drawImage(b.getImage(), b.getX(), b.getY(), this);
+			}
+		}
+	}
 
-      Toolkit.getDefaultToolkit().sync();
-      g.dispose();
-    }
+	// This method show score and lives; Nick
+	public void drawScore(Graphics g) {
 
-    public void gameOver()
-    {
+		int score = deaths * 100;
 
-        Graphics g = this.getGraphics();
+		Font small = new Font("Helvetica", Font.BOLD, 16);
 
-        g.setColor(Color.black); 
-        g.fillRect(0, 0, BOARD_WIDTH, BOARD_HEIGTH);
+		g.setColor(Color.black);
+		g.setFont(small);
+		g.drawString("Score: " + Integer.toString(score), 40, 40);
+		g.drawString("HP: " + Integer.toString(lives), 40, 60);
 
-        g.setColor(new Color(0, 32, 48));
-        g.fillRect(50, BOARD_WIDTH/2 - 30, BOARD_WIDTH-100, 50);
-        g.setColor(Color.white);
-        g.drawRect(50, BOARD_WIDTH/2 - 30, BOARD_WIDTH-100, 50);
+	}
 
-        Font small = new Font("Helvetica", Font.BOLD, 14);
-        FontMetrics metr = this.getFontMetrics(small);
+	// Method to draw the background; Mitko
+	public void drawBackground(Graphics g) {
+		BackgroundImage bground = new BackgroundImage();
 
-        g.setColor(Color.white);
-        g.setFont(small);
-        g.drawString(message, (BOARD_WIDTH - metr.stringWidth(message))/2, 
-            BOARD_WIDTH/2);
-    }
+		g.drawImage(bground.getImage(), -8, -8, this);
+	}
 
-    public void animationCycle()  {
+	public void paint(Graphics g) {
+		super.paint(g);
 
-        if (deaths == NUMBER_OF_ALIENS_TO_DESTROY) {
-            ingame = false;
-            message = "Game won!";
-        }
+		// TODO we don't need the ground - remove it later?!?
+		// g.setColor(Color.white); //changed from black
+		// g.fillRect(0, 0, d.width, d.height); //changed (0, 0, d.width,
+		// d.height)
+		// g.setColor(Color.green);
 
-        // player
-        player.act();
+		if (ingame) {
 
-        // shot
-        if (shot.isVisible()) {
-            Iterator it = aliens.iterator();
-            int shotX = shot.getX();
-            int shotY = shot.getY();
+			drawBackground(g);
+			// g.drawLine(0, GROUND, BOARD_WIDTH, GROUND); //changed from (0,
+			// GROUND, BOARD_WIDTH, GROUND)
 
-            while (it.hasNext()) {
-                Alien alien = (Alien) it.next();
-                int alienX = alien.getX();
-                int alienY = alien.getY();
+			// the line to keep the playing field from the captions
+			g.setColor(Color.black); // changed from black
+			g.fillRect(0, 80, BOARD_WIDTH, 10); // changed (0, 0, d.width, d.height)
+			g.setColor(Color.black);
 
-                if (alien.isVisible() && shot.isVisible()) {
-                    if (shotX >= (alienX) && 
-                        shotX <= (alienX + ALIEN_WIDTH) &&
-                        shotY >= (alienY) &&
-                        shotY <= (alienY+ALIEN_HEIGHT) ) {
-                            ImageIcon ii = 
-                                new ImageIcon(getClass().getResource(expl));
-                            alien.setImage(ii.getImage());
-                            alien.setDying(true);
-                            deaths++;
-                            shot.die();
-                        }
-                }
-            }
-            
-            //here we manage the player shots behaviour
-            //TODO to make the player shoot more than one shot per screen
-            int x = shot.getX(); //changed from int y = shot.getY();
-            x += 4; //changed from y-= 4;
-            if (x > BOARD_WIDTH) //changed from y < 0
-                shot.die();
-            else shot.setX(x); //changed from shot.setY(y);
-        }
+			drawAliens(g);
+			drawPlayer(g);
+			drawShot(g);
+			drawBombing(g);
+			drawScore(g);
+		}
 
-        // aliens
-        // this makes the aliens bounce up and down
-         Iterator it1 = aliens.iterator();
+		Toolkit.getDefaultToolkit().sync();
+		g.dispose();
+	}
 
-         while (it1.hasNext()) {
-             Alien a1 = (Alien) it1.next();
-             int y = a1.getY(); //changed from x-es
+	public void gameOver() {
 
-             if (y  >= BOARD_HEIGTH - BORDER_DOWN && direction != -1) { //changed from x, width
-                 direction = -1;
-                 Iterator i1 = aliens.iterator();
-                 while (i1.hasNext()) {
-                     Alien a2 = (Alien) i1.next();
-                     a2.setX(a2.getX() - GO_LEFT); //changed from a2.setY(a2.getY() + GO_DOWN);
-                 }
-             }
+		Graphics g = this.getGraphics();
 
-            if (y <= BORDER_UP && direction != 1) { //changed from x
-                direction = 1;
+		g.setColor(Color.black);
+		g.fillRect(0, 0, BOARD_WIDTH, BOARD_HEIGTH);
 
-                Iterator i2 = aliens.iterator();
-                while (i2.hasNext()) {
-                    Alien a = (Alien)i2.next();
-                    a.setX(a.getX() - GO_LEFT); //changed from a.setY(a.getY() + GO_DOWN);
-                }
-            }
-        }
+		g.setColor(new Color(0, 32, 48));
+		g.fillRect(50, BOARD_WIDTH / 2 - 30, BOARD_WIDTH - 100, 50);
+		g.setColor(Color.white);
+		g.drawRect(50, BOARD_WIDTH / 2 - 30, BOARD_WIDTH - 100, 50);
 
-        //guess this makes aliens win the game - invasion 
-        Iterator it = aliens.iterator();
+		Font small = new Font("Helvetica", Font.BOLD, 14);
+		FontMetrics metr = this.getFontMetrics(small);
 
-        while (it.hasNext()) {
-            Alien alien = (Alien) it.next();
-            if (alien.isVisible()) {
+		g.setColor(Color.white);
+		g.setFont(small);
+		g.drawString(message, (BOARD_WIDTH - metr.stringWidth(message)) / 2,
+				BOARD_WIDTH / 2);
+	}
 
-                int x = alien.getX(); //changed from x-es
+	public void animationCycle() {
 
-                if (x < GROUND + ALIEN_WIDTH) { //changed from (y > GROUND - ALIEN_HEIGHT)
-                    ingame = false;
-                    message = "Invasion!";
-                }
+		if (deaths == NUMBER_OF_ALIENS_TO_DESTROY) {
+			ingame = false;
+			message = "Game won!";
+		}
 
-                alien.act(direction);
-            }
-        }
+		// player
+		player.act();
 
-        // bombs
+		// shot
+		if (shot.isVisible()) {
+			Iterator it = aliens.iterator();
+			int shotX = shot.getX();
+			int shotY = shot.getY();
 
-        Iterator i3 = aliens.iterator();
-        Random generator = new Random();
+			while (it.hasNext()) {
+				Alien alien = (Alien) it.next();
+				int alienX = alien.getX();
+				int alienY = alien.getY();
 
-        while (i3.hasNext()) {
-            int shot = generator.nextInt(15);
-            Alien a = (Alien) i3.next();
-            Alien.Bomb b = a.getBomb();
-            if (shot == CHANCE && a.isVisible() && b.isDestroyed()) {
+				if (alien.isVisible() && shot.isVisible()) {
+					if (shotX >= (alienX) && shotX <= (alienX + ALIEN_WIDTH)
+							&& shotY >= (alienY)
+							&& shotY <= (alienY + ALIEN_HEIGHT)) {
+						ImageIcon ii = new ImageIcon(getClass().getResource(
+								expl));
+						alien.setImage(ii.getImage());
+						alien.setDying(true);
+						deaths++;
+						shot.die();
+					}
+				}
+			}
 
-                b.setDestroyed(false);
-                b.setX(a.getX());
-                b.setY(a.getY());   
-            }
+			// here we manage the player shots behaviour
+			// TODO to make the player shoot more than one shot per screen
+			int x = shot.getX(); // changed from int y = shot.getY();
+			x += 4; // changed from y-= 4;
+			if (x > BOARD_WIDTH) // changed from y < 0
+				shot.die();
+			else
+				shot.setX(x); // changed from shot.setY(y);
+		}
 
-            int bombX = b.getX();
-            int bombY = b.getY();
-            int playerX = player.getX();
-            int playerY = player.getY();
+		// aliens
+		// this makes the aliens bounce up and down
+		Iterator it1 = aliens.iterator();
 
-            // HIT DETECTION
-            if (player.isVisible() && !b.isDestroyed()) {
-                if ( bombY >= (playerY) && //changed from  bombX >= (playerX)
-                     bombY <= (playerY + PLAYER_HEIGHT) && //changed from bombX <= (playerX+PLAYER_WIDTH)
-                     bombX >= (playerX) && //changed from bombY >= (playerY)
-                     bombX <= (playerX + PLAYER_WIDTH + 5) ) { //changed from bombY <= (playerY+PLAYER_HEIGHT)
-                	
-                	// Here we implement lives idea; Nick
-                	if (lives == 1) { 
-						
-					ImageIcon ii = 
-                            new ImageIcon(this.getClass().getResource(expl));
-                        player.setImage(ii.getImage());
-                        player.setDying(true); // Player dies
-                        b.setDestroyed(true);
-                    } else {
+		while (it1.hasNext()) {
+			Alien a1 = (Alien) it1.next();
+			int y = a1.getY(); // changed from x-es
+
+			if (y >= BOARD_HEIGTH - BORDER_DOWN && direction != -1) { // changed
+																		// from
+																		// x,
+																		// width
+				direction = -1;
+				Iterator i1 = aliens.iterator();
+				while (i1.hasNext()) {
+					Alien a2 = (Alien) i1.next();
+					a2.setX(a2.getX() - GO_LEFT); // changed from
+													// a2.setY(a2.getY() +
+													// GO_DOWN);
+				}
+			}
+
+			if (y <= BORDER_UP && direction != 1) { // changed from x
+				direction = 1;
+
+				Iterator i2 = aliens.iterator();
+				while (i2.hasNext()) {
+					Alien a = (Alien) i2.next();
+					a.setX(a.getX() - GO_LEFT); // changed from a.setY(a.getY()
+												// + GO_DOWN);
+				}
+			}
+		}
+
+		// guess this makes aliens win the game - invasion
+		Iterator it = aliens.iterator();
+
+		while (it.hasNext()) {
+			Alien alien = (Alien) it.next();
+			if (alien.isVisible()) {
+
+				int x = alien.getX(); // changed from x-es
+
+				if (x < GROUND + ALIEN_WIDTH) { // changed from (y > GROUND -
+												// ALIEN_HEIGHT)
+					ingame = false;
+					message = "Invasion!";
+				}
+
+				alien.act(direction);
+			}
+		}
+
+		// bombs
+
+		Iterator i3 = aliens.iterator();
+		Random generator = new Random();
+
+		while (i3.hasNext()) {
+			int shot = generator.nextInt(15);
+			Alien a = (Alien) i3.next();
+			Alien.Bomb b = a.getBomb();
+			if (shot == CHANCE && a.isVisible() && b.isDestroyed()) {
+
+				b.setDestroyed(false);
+				b.setX(a.getX());
+				b.setY(a.getY());
+			}
+
+			int bombX = b.getX();
+			int bombY = b.getY();
+			int playerX = player.getX();
+			int playerY = player.getY();
+
+			// HIT DETECTION
+			if (player.isVisible() && !b.isDestroyed()) {
+				if (bombY >= (playerY) && // changed from bombX >= (playerX)
+						bombY <= (playerY + PLAYER_HEIGHT) && // changed from
+																// bombX <=
+																// (playerX+PLAYER_WIDTH)
+						bombX >= (playerX) && // changed from bombY >= (playerY)
+						bombX <= (playerX + PLAYER_WIDTH + 5)) { // changed from
+																	// bombY <=
+																	// (playerY+PLAYER_HEIGHT)
+
+					// Here we implement lives idea; Nick
+					if (lives == 1) {
+
+						ImageIcon ii = new ImageIcon(this.getClass()
+								.getResource(expl));
+						player.setImage(ii.getImage());
+						player.setDying(true); // Player dies
+						b.setDestroyed(true);
+					} else {
 						lives--;
 					}
-                }
-            }
-        	
-            //this moves the aliens bombs left
-            if (!b.isDestroyed()) { // speed of bombs is here; Nick
-                b.setX(b.getX() - 5);  //changed from b.setY(b.getY() + 1);
-                if (b.getX() <= GROUND + BOMB_WIDTH) { //changed from b.getY() >= GROUND - BOMB_HEIGHT
-                    b.setDestroyed(true);
-                }
-            }
-        }
-    }
+				}
+			}
 
-    public void run() {
+			// this moves the aliens bombs left
+			if (!b.isDestroyed()) { // speed of bombs is here; Nick
+				b.setX(b.getX() - 5); // changed from b.setY(b.getY() + 1);
+				if (b.getX() <= GROUND + BOMB_WIDTH) { // changed from b.getY()
+														// >= GROUND -
+														// BOMB_HEIGHT
+					b.setDestroyed(true);
+				}
+			}
+		}
+	}
 
-        long beforeTime, timeDiff, sleep;
+	public void run() {
 
-        beforeTime = System.currentTimeMillis();
+		long beforeTime, timeDiff, sleep;
 
-        while (ingame) {
-            repaint();
-            animationCycle();
+		beforeTime = System.currentTimeMillis();
 
-            timeDiff = System.currentTimeMillis() - beforeTime;
-            sleep = DELAY - timeDiff;
+		while (ingame) {
+			repaint();
+			animationCycle();
 
-            if (sleep < 0) 
-                sleep = 2;
-            try {
-                Thread.sleep(sleep);
-            } catch (InterruptedException e) {
-                System.out.println("interrupted");
-            }
-            beforeTime = System.currentTimeMillis();
-        }
-        gameOver();
-    }
+			timeDiff = System.currentTimeMillis() - beforeTime;
+			sleep = DELAY - timeDiff;
 
-    private class TAdapter extends KeyAdapter {
+			if (sleep < 0)
+				sleep = 2;
+			try {
+				Thread.sleep(sleep);
+			} catch (InterruptedException e) {
+				System.out.println("interrupted");
+			}
+			beforeTime = System.currentTimeMillis();
+		}
+		gameOver();
+	}
 
-        public void keyReleased(KeyEvent e) {
-            player.keyReleased(e);
-        }
+	private class TAdapter extends KeyAdapter {
 
-        public void keyPressed(KeyEvent e) {
+		public void keyReleased(KeyEvent e) {
+			player.keyReleased(e);
+		}
 
-          player.keyPressed(e);
+		public void keyPressed(KeyEvent e) {
 
-          int x = player.getX();
-          int y = player.getY();
+			player.keyPressed(e);
 
-          if (ingame)
-          {
-            if (e.isControlDown()) { //changed from (e.isAltDown()) - we will shoot with ctrl
-                if (!shot.isVisible()) 
-                    shot = new Shot(x, y);
-                    
-            }
-          }
-        }
-    }
+			int x = player.getX();
+			int y = player.getY();
+
+			if (ingame) {
+				if (e.isControlDown()) { // changed from (e.isAltDown()) - we
+											// will shoot with ctrl
+					if (!shot.isVisible())
+						shot = new Shot(x, y);
+
+				}
+			}
+		}
+	}
 }
