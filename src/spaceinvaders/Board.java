@@ -142,18 +142,26 @@ public class Board extends JPanel implements Runnable, Commons {
 
     }
     
+    // Method to draw the background; Mitko
+    public void drawBackground(Graphics g){
+    	BackgroundImage bground = new BackgroundImage();
+    	
+    	g.drawImage(bground.getImage(), -8, -8, this);
+    }
+    
     public void paint(Graphics g)
     {
       super.paint(g);
       
       //TODO we don't need the ground - remove it later?!?
-      g.setColor(Color.white); //changed from black
-      g.fillRect(0, 0, d.width, d.height); //changed (0, 0, d.width, d.height)
-      g.setColor(Color.green);   
+//      g.setColor(Color.white); //changed from black
+//      g.fillRect(0, 0, d.width, d.height); //changed (0, 0, d.width, d.height)
+//      g.setColor(Color.green);   
 
       if (ingame) {
-
-        g.drawLine(GROUND, 0, GROUND, BOARD_HEIGTH); //changed from (0, GROUND, BOARD_WIDTH, GROUND)
+    	  
+    	drawBackground(g);
+//        g.drawLine(GROUND, 0, GROUND, BOARD_HEIGTH); //changed from (0, GROUND, BOARD_WIDTH, GROUND)
         drawAliens(g);
         drawPlayer(g);
         drawShot(g);
