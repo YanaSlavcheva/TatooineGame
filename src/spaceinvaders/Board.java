@@ -32,7 +32,7 @@ public class Board extends JPanel implements Runnable, Commons {
     private int lives = 1000; // This must be 30 if we want to have 3 lives. Coz shot is 10px long; Nick
     
     private boolean ingame = true;
-    private final String expl = "../spacepix/explosion.gif"; //changed from explosion.png
+    private final String expl = "../spacepix/explosion.png";
     private final String alienpix = "../spacepix/alien.png";
     private String message = "Game Over";
 
