@@ -1,5 +1,18 @@
 package tatooine;
 
+
+import org.apache.commons.io.FileUtils;
+
+
+
+
+
+import java.io.File;
+/*import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+*/
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -12,11 +25,16 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
+
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class Board extends JPanel implements Runnable, Commons {
-
+	
+	
+	
+	
 	private Dimension d;
 	private ArrayList fighters; // TODO change fighters spacing in array
 	private Player player;
@@ -221,8 +239,44 @@ public class Board extends JPanel implements Runnable, Commons {
 		g.setColor(Color.white);
 		g.setFont(small);
 		g.drawString(messageScores + Integer.toString(score), (BOARD_WIDTH - finalTextsSmall.stringWidth(messageScores)) / 2, BOARD_WIDTH / 2);
+		
+		try {
+			scoreBoard(g);
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+		}
+	
 	}
+	//We will call scoreBoard() from gameOver() Nick;
+		
+	private void scoreBoard(Graphics g) throws Exception {
+		
+		String userName ="";
+		File file = new File("scoreBoard.mge"); 
+		if (!file.exists()) {
+			file.createNewFile();
+		}
+		String string = FileUtils.readFileToString(file); 
+		int highScore = Integer.parseInt(string.trim().split(" ")[0]);
+		
 
+		if (highScore<score) {
+			
+			userName = JOptionPane.showInputDialog("Enter your name");
+			FileUtils.write(file, Integer.toString(score)+" "+ userName);
+			g.drawString(Integer.toString(score), 400,200);
+		}else{
+			userName = string.trim().split(" ")[1];
+			g.drawString(Integer.toString(highScore), 400,200);
+		}
+		
+		g.setColor(Color.white);
+		g.drawString("HIGH SCORE", 300,150);
+		g.drawString(userName, 250,200);
+				
+	}
+	
 	public void animationCycle() {
 
 		if (deaths == NUMBER_OF_FIGHTERS_TO_DESTROY) {
@@ -412,6 +466,10 @@ public class Board extends JPanel implements Runnable, Commons {
 					if (!shot.isVisible())
 						shot = new Shot(x, y);
 
+				}
+				if (e.isShiftDown()) { // Add a kill button;  Nick
+					lives =0;		   //
+					ingame = false;    // must delete it letter;
 				}
 			}
 		}
