@@ -29,7 +29,7 @@ public class Board extends JPanel implements Runnable, Commons {
     private int direction = -1; //original -1
     public  int deaths = 0;
 
-    private int lives = 100; // This must be 30 if we want to have 3 lives. Coz shot is 10px long; Nick
+    private int lives = 100; // This is HP. 100 starting, decreasing with 3 per shot received; Mitko
     
     private boolean ingame = true;
     private final String expl = "../spacepix/explosion.png";
