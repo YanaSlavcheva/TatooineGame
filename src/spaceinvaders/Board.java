@@ -29,7 +29,7 @@ public class Board extends JPanel implements Runnable, Commons {
     private int direction = -1; //original -1
     public  int deaths = 0;
 
-    private int lives = 30; // This must be 30 if we want to have 3 lives. Coz shot is 10px long; Nick
+    private int lives = 1000; // This must be 30 if we want to have 3 lives. Coz shot is 10px long; Nick
     
     private boolean ingame = true;
     private final String expl = "../spacepix/explosion.gif"; //changed from explosion.png
@@ -131,14 +131,14 @@ public class Board extends JPanel implements Runnable, Commons {
     // This method show score and lives; Nick 
     public void drawScore(Graphics g){
     	
-    	int score = deaths;
+    	int score = deaths * 100;
     	
-    	Font small = new Font("Helvetica", Font.BOLD, 14);
+    	Font small = new Font("Helvetica", Font.BOLD, 16);
         
         g.setColor(Color.black);
         g.setFont(small);
-        g.drawString("Score: "+Integer.toString(score), 50, 50);
-        g.drawString("HP: "+Integer.toString(lives/10), 50, 70);
+        g.drawString("Score: "+Integer.toString(score), 40, 40);
+        g.drawString("HP: "+Integer.toString(lives/10), 40, 60);
 
     }
     
@@ -308,6 +308,7 @@ public class Board extends JPanel implements Runnable, Commons {
             int playerX = player.getX();
             int playerY = player.getY();
 
+            // SHOT HIT PARAMETERS
             if (player.isVisible() && !b.isDestroyed()) {
                 if ( bombY >= (playerY) && //changed from  bombX >= (playerX)
                     bombY <= (playerY+PLAYER_HEIGHT) && //changed from bombX <= (playerX+PLAYER_WIDTH)
@@ -319,8 +320,8 @@ public class Board extends JPanel implements Runnable, Commons {
 					ImageIcon ii = 
                             new ImageIcon(this.getClass().getResource(expl));
                         player.setImage(ii.getImage());
-                        player.setDying(true);
-                        b.setDestroyed(true);;
+                        player.setDying(true); // Player dies
+                        b.setDestroyed(true);
                     }else {
 						lives--;
 					}
@@ -329,7 +330,7 @@ public class Board extends JPanel implements Runnable, Commons {
         	
             //this moves the aliens bombs left
             if (!b.isDestroyed()) { // speed of bombs is here; Nick
-                b.setX(b.getX() - 1);  //changed from b.setY(b.getY() + 1);
+                b.setX(b.getX() - 10);  //changed from b.setY(b.getY() + 1);
                 if (b.getX() <= GROUND + BOMB_WIDTH) { //changed from b.getY() >= GROUND - BOMB_HEIGHT
                     b.setDestroyed(true);
                 }
