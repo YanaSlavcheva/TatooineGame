@@ -1,4 +1,4 @@
-package spaceinvaders;
+package tatooine;
 
 import java.awt.Image;
 

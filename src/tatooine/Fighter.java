@@ -1,14 +1,14 @@
-package spaceinvaders;
+package tatooine;
 
 import javax.swing.ImageIcon;
 
 
-public class Alien extends Sprite {
+public class Fighter extends Sprite {
 
     private Bomb bomb;
-    private final String shot = "../spacepix/alien.png";
+    private final String shot = "../tatooinepix/fighter.png";
 
-    public Alien(int x, int y) {
+    public Fighter(int x, int y) {
         this.x = x;
         this.y = y;
 
@@ -17,7 +17,7 @@ public class Alien extends Sprite {
         setImage(ii.getImage());
 
     }
-    //this codes makes aliens bounce up-down
+    //this codes makes fighters bounce up-down
     public void act(int direction) {
         this.y += direction; //changed from x += direction
         					
@@ -29,7 +29,7 @@ public class Alien extends Sprite {
 
     public class Bomb extends Sprite {
 
-        private final String bomb = "../spacepix/bomb.png";
+        private final String bomb = "../tatooinepix/bomb.png";
         private boolean destroyed;
 
         public Bomb(int x, int y) {

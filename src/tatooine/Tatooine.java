@@ -1,10 +1,10 @@
-package spaceinvaders;
+package tatooine;
 
 import javax.swing.JFrame;
 
-public class SpaceInvaders extends JFrame implements Commons {
+public class Tatooine extends JFrame implements Commons {
 
-    public SpaceInvaders()
+    public Tatooine()
     {
         add(new Board());
         setTitle("Tatooine - The Empire Strikes Back");
@@ -16,6 +16,6 @@ public class SpaceInvaders extends JFrame implements Commons {
     }
 
     public static void main(String[] args) {
-        new SpaceInvaders();
+        new Tatooine();
     }
 }
