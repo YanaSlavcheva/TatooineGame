@@ -1,16 +1,5 @@
 package tatooine;
 
-
-import org.apache.commons.io.FileUtils;
-
-
-
-
-
-
-import com.sun.org.apache.xerces.internal.dom.DeepNodeListImpl;
-
-import java.io.File;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -19,6 +8,7 @@ import java.awt.Graphics;
 import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
@@ -26,6 +16,8 @@ import java.util.Random;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
+import org.apache.commons.io.FileUtils;
 
 public class Board extends JPanel implements Runnable, Commons {
 	
