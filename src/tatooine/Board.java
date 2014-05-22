@@ -7,12 +7,10 @@ import org.apache.commons.io.FileUtils;
 
 
 
+
+import com.sun.org.apache.xerces.internal.dom.DeepNodeListImpl;
+
 import java.io.File;
-/*import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-*/
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -24,7 +22,6 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
-
 
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
@@ -255,7 +252,12 @@ public class Board extends JPanel implements Runnable, Commons {
 		String userName ="";
 		File file = new File("scoreBoard.mge"); 
 		if (!file.exists()) {
+			
 			file.createNewFile();
+			String defaulfName = "Gencho";
+			int defaultScore = 0;
+			FileUtils.write(file, Integer.toString(defaultScore)+" "+ defaulfName);
+		
 		}
 		String string = FileUtils.readFileToString(file); 
 		int highScore = Integer.parseInt(string.trim().split(" ")[0]);
